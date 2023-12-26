@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@components/*": ["./src/components/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@configs/*": ["./src/configs/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@libs/*": ["./src/libs/*"],
+      "@public/*": ["./public/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@styles/*": ["./src/styles/*"]
+    }
+  }
+}
