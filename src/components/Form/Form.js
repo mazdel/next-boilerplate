@@ -3,9 +3,20 @@ import PropTypes from "prop-types";
 
 import { useReducer, useEffect } from "react";
 import { FormContext } from "@contexts/FormContext";
+import { useFetch } from "@hooks/useFetch";
 
 const formReducer = (state, action) => {
-  return { ...state, [action.field]: action.value };
+  return {
+    ...state,
+    fields: { ...state.fields, [action.field]: action.value },
+    validations: {
+      ...state.validations,
+      [action.field]: {
+        error: action.error,
+        success: action.success,
+      },
+    },
+  };
 };
 /**
  * A nextjs client component to handle Form
@@ -19,14 +30,21 @@ const formReducer = (state, action) => {
  * @returns {ReactNode}
  */
 const Form = ({ children, id, action, method = "POST", ...moreProps }) => {
-  const [formState, dispatch] = useReducer(formReducer, {});
+  const [formState, dispatch] = useReducer(formReducer, {
+    fields: {},
+    validations: {},
+  });
+  const [response, setPayload] = useFetch(action, { method: method });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    /* submit handler here */
+
+    setPayload(formState.fields);
   };
   useEffect(() => {
-    //
-  }, [formState]);
+    /* handle the response here */
+    console.log(response);
+  }, [response]);
 
   return (
     <form

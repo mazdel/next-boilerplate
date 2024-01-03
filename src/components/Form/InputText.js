@@ -25,7 +25,7 @@ const InputText = ({
 }) => {
   const { formState, dispatch } = useFormContext();
 
-  const fieldValue = formState[name];
+  const fieldValue = formState.fields[name];
   return (
     <input
       type={type}
@@ -33,7 +33,12 @@ const InputText = ({
       className={className}
       value={fieldValue ?? defaultValue}
       onChange={(e) => {
-        dispatch({ field: name, value: e.target.value });
+        dispatch({
+          field: name,
+          value: e.target.value,
+          error: "",
+          success: "",
+        });
         if (onChange) return onChange(e);
         return;
       }}
