@@ -15,14 +15,14 @@ const config = {
   testEnvironment: "jest-environment-jsdom",
   testMatch: ["**/__tests__/**/*.+(spec|test).[jt]s?(x)"],
   moduleNameMapper: {
-    "^@app/(.*)$": "<rootDir>/app/$1",
-    "^@components/(.*)$": "<rootDir>/src/components/$1",
-    "^@utils/(.*)$": "<rootDir>/src/utils/$1",
-    "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
-    "^@styles/(.*)$": "<rootDir>/src/styles/$1",
-    "^@contexts/(.*)$": "<rootDir>/src/contexts/$1",
-    "^@configs/(.*)$": "<rootDir>/src/configs/$1",
-    "^@public/(.*)$": "<rootDir>/public/$1",
+    "^@/app/(.*)$": "<rootDir>/app/$1",
+    "^@/components/(.*)$": "<rootDir>/src/components/$1",
+    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
+    "^@/styles/(.*)$": "<rootDir>/src/styles/$1",
+    "^@/contexts/(.*)$": "<rootDir>/src/contexts/$1",
+    "^@/configs/(.*)$": "<rootDir>/src/configs/$1",
+    "^@/public/(.*)$": "<rootDir>/public/$1",
   },
 };
 
