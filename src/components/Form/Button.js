@@ -1,7 +1,7 @@
 "use client";
 
 import PropTypes from "prop-types";
-import { useFormContext } from "@contexts/FormContext";
+import { useFormContext } from "@/contexts/FormContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 

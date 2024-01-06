@@ -1,7 +1,7 @@
 "use client";
 import PropTypes from "prop-types";
 
-import { useFormContext } from "@contexts/FormContext";
+import { useFormContext } from "@/contexts/FormContext";
 
 /**
  * A nextjs Form Component to handle text based input

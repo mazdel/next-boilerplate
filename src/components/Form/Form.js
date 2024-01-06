@@ -2,8 +2,8 @@
 import PropTypes from "prop-types";
 
 import { useReducer, useEffect } from "react";
-import { FormContext } from "@contexts/FormContext";
-import { useFetch } from "@hooks/useFetch";
+import { FormContext } from "@/contexts/FormContext";
+import { useFetch } from "@/hooks/useFetch";
 
 const formReducer = (prevState, action) => {
   return {
