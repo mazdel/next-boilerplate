@@ -27,10 +27,18 @@ const formReducer = (prevState, action) => {
  * @property {string} [id] id of the element
  * @property {string} action url to send the form
  * @property {string} [method=POST] HTTP method to send the form, default to POST
+ * @property {function} [onSuccess] A function which triggered after the form got a success response which used as the only parameter
  * @property {object} [moreProps] additional props to be passed to form element
  * @returns {ReactNode}
  */
-const Form = ({ children, id, action, method = "POST", ...moreProps }) => {
+const Form = ({
+  children,
+  id,
+  action,
+  method = "POST",
+  onSuccess,
+  ...moreProps
+}) => {
   const [formState, dispatch] = useReducer(formReducer, {
     fields: {},
     validations: {},
@@ -40,15 +48,29 @@ const Form = ({ children, id, action, method = "POST", ...moreProps }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    dispatch({
+      field: "_all",
+      error: undefined,
+    });
     setPayload(formState.fields);
   };
   useEffect(() => {
     /* handle the response here */
-    console.log(response);
+
+    if (response.code >= 200 && response.code < 300) {
+      onSuccess(response);
+    }
+    if (response.code > 400 && response.code < 500) {
+      dispatch({
+        field: "_all",
+        error: response.data.message,
+      });
+    }
     return dispatch({
       state: { code: response.code, message: response.status },
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
   return (
@@ -71,5 +93,6 @@ Form.propTypes = {
   action: PropTypes.string.isRequired,
   method: PropTypes.string,
   className: PropTypes.string,
+  onSuccess: PropTypes.func,
 };
 export { Form };
