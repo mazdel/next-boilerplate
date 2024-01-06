@@ -2,20 +2,21 @@
 import PropTypes from "prop-types";
 
 import { useReducer, useEffect } from "react";
-import { FormContext } from "@contexts/FormContext";
-import { useFetch } from "@hooks/useFetch";
+import { FormContext } from "@/contexts/FormContext";
+import { useFetch } from "@/hooks/useFetch";
 
-const formReducer = (state, action) => {
+const formReducer = (prevState, action) => {
   return {
-    ...state,
-    fields: { ...state.fields, [action.field]: action.value },
+    ...prevState,
+    fields: { ...prevState.fields, [action.field]: action.value },
     validations: {
-      ...state.validations,
+      ...prevState.validations,
       [action.field]: {
         error: action.error,
         success: action.success,
       },
     },
+    state: action.state ?? prevState.state,
   };
 };
 /**
@@ -33,6 +34,7 @@ const Form = ({ children, id, action, method = "POST", ...moreProps }) => {
   const [formState, dispatch] = useReducer(formReducer, {
     fields: {},
     validations: {},
+    state: { code: 0, message: "idle" },
   });
   const [response, setPayload] = useFetch(action, { method: method });
 
@@ -44,6 +46,9 @@ const Form = ({ children, id, action, method = "POST", ...moreProps }) => {
   useEffect(() => {
     /* handle the response here */
     console.log(response);
+    return dispatch({
+      state: { code: response.code, message: response.status },
+    });
   }, [response]);
 
   return (
