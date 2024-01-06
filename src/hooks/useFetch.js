@@ -47,6 +47,15 @@ export const useFetch = (url, httpOptions) => {
           signal: signal,
         };
 
+        if (!payload || Object.keys(payload).length === 0) {
+          if (requestOptions.method === "POST") throw { code: 400 };
+          if (requestOptions.method === "PUT") throw { code: 400 };
+          if (requestOptions.method === "PATCH") throw { code: 400 };
+          if (requestOptions.method === "post") throw { code: 400 };
+          if (requestOptions.method === "put") throw { code: 400 };
+          if (requestOptions.method === "patch") throw { code: 400 };
+        }
+
         if (payload && Object.keys(payload).length > 0) {
           requestOptions = {
             ...requestOptions,
@@ -65,11 +74,13 @@ export const useFetch = (url, httpOptions) => {
           data: responseJson,
         });
       } catch (error) {
-        setResponse({
+        const response = {
           status: "error",
           data: error.data ?? error,
           code: error.code ?? 501,
-        });
+        };
+        setResponse(response);
+        controller.abort(response);
       }
     })();
     return () => {
