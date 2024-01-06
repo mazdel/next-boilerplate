@@ -6,13 +6,13 @@ import { useFormContext } from "@/contexts/FormContext";
 /**
  * A nextjs Form Component to handle text based input
  * @component
- * @param {object} props component props
+ * @param {Object} props component props
  * @property {string} name required, name of the input element
  * @property {string} [type] type of the input element, default to "text"
  * @property {string} [className] class names to be passed to input element
  * @property {string} [defaultValue] initial value of the input
  * @property {function} [onChange] additional onChange handler
- * @property {object} [moreProps] additional props to be passed to input element
+ * @property {Object} [moreProps] additional props to be passed to input element
  * @returns {ReactNode}
  */
 const InputText = ({

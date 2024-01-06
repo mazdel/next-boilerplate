@@ -8,7 +8,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 /**
  * A nextjs Form Component to handle button
  * @component
- * @param {object} props component props
+ * @param {Object} props component props
  * @property {ReactNode} children children of form to be rendered
  * @property {string} [form] form id to be submitted
  * @property {string} [className] class names to be passed to input element
