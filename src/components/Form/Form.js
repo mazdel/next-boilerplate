@@ -63,7 +63,7 @@ const Form = ({
     if (response.code > 400 && response.code < 500) {
       dispatch({
         field: "_all",
-        error: response.data.message,
+        error: response.data.error.message,
       });
     }
     return dispatch({
