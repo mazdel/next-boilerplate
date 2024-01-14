@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import globalConfig from "@/configs/global";
 import { AuthVerify } from "@/libs/Auth";
+import moment from "moment/moment";
 
 export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
@@ -33,5 +34,11 @@ export async function middleware(request) {
     );
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.cookies.set({
+    name: "access_token",
+    value: token,
+    expires: moment.unix(verifiedToken.exp).toDate(),
+  });
+  return response;
 }
