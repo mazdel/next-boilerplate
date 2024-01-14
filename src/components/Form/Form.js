@@ -1,9 +1,8 @@
 "use client";
 import PropTypes from "prop-types";
 
-import { useReducer, useEffect } from "react";
+import { useReducer, useState, useMemo } from "react";
 import { FormContext } from "@/contexts/FormContext";
-import { useFetch } from "@/hooks/useFetch";
 
 const formReducer = (prevState, action) => {
   return {
@@ -44,17 +43,47 @@ const Form = ({
     validations: {},
     state: { code: 0, message: "idle" },
   });
-  const [response, setPayload] = useFetch(action, { method: method });
 
-  const handleSubmit = (e) => {
+  const [response, setResponse] = useState({
+    status: "idle",
+    code: 0,
+    data: undefined,
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setResponse({
+      code: 503,
+      data: undefined,
+      status: "loading",
+    });
     dispatch({
       field: "_all",
       error: undefined,
     });
-    setPayload(formState.fields);
+
+    const fetchResponse = await fetch(action, {
+      method: method,
+      body: JSON.stringify(formState.fields),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const result = await fetchResponse.json();
+    if (fetchResponse.status !== 200) {
+      return setResponse({
+        code: fetchResponse.status,
+        data: result,
+        status: "error",
+      });
+    }
+    return setResponse({
+      code: fetchResponse.status,
+      data: result,
+      status: "success",
+    });
   };
-  useEffect(() => {
+
+  useMemo(() => {
     /* handle the response here */
 
     if (response.code >= 200 && response.code < 300) {
@@ -69,9 +98,7 @@ const Form = ({
     return dispatch({
       state: { code: response.code, message: response.status },
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [response]);
+  }, [onSuccess, response]);
 
   return (
     <form
