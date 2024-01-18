@@ -5,7 +5,8 @@ const globalConfig = {
     exp: "2h",
     secret: process.env.SECRET ?? "th1sIsAsecr3t",
   },
-  protectedPath: ["/admin","/dashboard"],
+  protectedPath: ["/admin", "/dashboard", "/api/v1"],
+  unProtectedPath: ["/api/v1/session"],
   defaultRedirectPath: "/",
 };
 
