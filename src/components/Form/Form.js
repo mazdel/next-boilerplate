@@ -68,14 +68,25 @@ const Form = ({
       headers: { "Content-Type": "application/json" },
     });
 
-    const result = await fetchResponse.json();
+    let result;
     if (fetchResponse.status !== 200) {
+      if (fetchResponse.status === 504) {
+        result = await fetchResponse.text();
+        return setResponse({
+          code: fetchResponse.status,
+          data: result,
+          status: "error",
+        });
+      }
+      result = await fetchResponse.json();
       return setResponse({
         code: fetchResponse.status,
         data: result,
         status: "error",
       });
     }
+
+    result = await fetchResponse.json();
     return setResponse({
       code: fetchResponse.status,
       data: result,
