@@ -105,7 +105,9 @@ const Form = ({
     /* handle the response here */
 
     if (response.code >= 200 && response.code < 300) {
-      onSuccess(response);
+      if (onSuccess) {
+        onSuccess(response);
+      }
     }
     if (response.code > 400 && response.code < 500) {
       dispatch({
