@@ -4,20 +4,6 @@ import PropTypes from "prop-types";
 import { useReducer, useState, useMemo } from "react";
 import { FormContext } from "@/contexts/FormContext";
 
-const formReducer = (prevState, action) => {
-  return {
-    ...prevState,
-    fields: { ...prevState.fields, [action.field]: action.value },
-    validations: {
-      ...prevState.validations,
-      [action.field]: {
-        error: action.error,
-        success: action.success,
-      },
-    },
-    state: action.state ?? prevState.state,
-  };
-};
 /**
  * A nextjs client component to handle Form
  * @component
@@ -36,10 +22,26 @@ const Form = ({
   action,
   method = "POST",
   onSuccess,
+  defaultFieldsValue = {},
   ...moreProps
 }) => {
+  const formReducer = (prevState, action) => {
+    return {
+      ...prevState,
+      fields: { ...prevState.fields, [action.field]: action.value },
+      validations: {
+        ...prevState.validations,
+        [action.field]: {
+          error: action.error,
+          success: action.success,
+        },
+      },
+      state: action.state ?? prevState.state,
+    };
+  };
+
   const [formState, dispatch] = useReducer(formReducer, {
-    fields: {},
+    fields: defaultFieldsValue ?? {},
     validations: {},
     state: { code: 0, message: "idle" },
   });
@@ -62,48 +64,55 @@ const Form = ({
       error: undefined,
     });
 
-    const fetchResponse = await fetch(action, {
-      method: method,
-      body: JSON.stringify(formState.fields),
-      headers: { "Content-Type": "application/json" },
-    });
+    try {
+      const fetchResponse = await fetch(action, {
+        method: method,
+        body: JSON.stringify(formState.fields),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    let result;
-    if (fetchResponse.status !== 200) {
-      if (fetchResponse.status === 504) {
-        result = await fetchResponse.text();
+      if (fetchResponse.status !== 200) throw { fetchResponse };
+
+      let result = await fetchResponse.json();
+      return setResponse({
+        code: fetchResponse.status,
+        data: result,
+        status: "success",
+      });
+    } catch (error) {
+      const { fetchResponse, ...restError } = error;
+      if (restError) {
+        console.error(restError);
+      }
+      if (fetchResponse.headers.get("Content-Type") !== "application/json") {
+        const result = await fetchResponse.text();
         return setResponse({
           code: fetchResponse.status,
           data: result,
           status: "error",
         });
       }
-      result = await fetchResponse.json();
+      const result = await fetchResponse.json();
       return setResponse({
         code: fetchResponse.status,
         data: result,
         status: "error",
       });
     }
-
-    result = await fetchResponse.json();
-    return setResponse({
-      code: fetchResponse.status,
-      data: result,
-      status: "success",
-    });
   };
 
   useMemo(() => {
     /* handle the response here */
 
     if (response.code >= 200 && response.code < 300) {
-      onSuccess(response);
+      if (onSuccess) {
+        onSuccess(response);
+      }
     }
     if (response.code > 400 && response.code < 500) {
       dispatch({
         field: "_all",
-        error: response.data.error.message,
+        error: response.data.error?.message,
       });
     }
     return dispatch({
@@ -131,6 +140,7 @@ Form.propTypes = {
   action: PropTypes.string.isRequired,
   method: PropTypes.string,
   className: PropTypes.string,
+  defaultFieldsValue: PropTypes.object,
   onSuccess: PropTypes.func,
 };
 export { Form };
