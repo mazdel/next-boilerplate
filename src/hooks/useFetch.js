@@ -62,6 +62,14 @@ export const useFetch = (url, httpOptions) => {
             body: JSON.stringify(payload),
           };
         }
+        // need to be improved, prevent body from entering GET request
+        if (
+          requestOptions.method === "get" ||
+          requestOptions.method === "GET"
+        ) {
+          delete requestOptions.body;
+        }
+        
         const httpResponse = await fetch(url, requestOptions);
         const statusCode = httpResponse.status;
         const responseJson = await httpResponse.json();
