@@ -1,4 +1,4 @@
-name: Linter Check by ${{github.actor}}
+name: Linter Check
 on:
   pull_request:
     branches:
