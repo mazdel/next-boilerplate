@@ -64,4 +64,4 @@ InputText.propTypes = {
   defaultValue: PropTypes.string,
   onChange: PropTypes.func,
 };
-export { InputText };
+export default InputText;

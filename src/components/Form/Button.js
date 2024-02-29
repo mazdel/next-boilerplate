@@ -49,4 +49,4 @@ Button.propTypes = {
   onClick: PropTypes.func,
   type: PropTypes.oneOf(["button", "submit", "reset"]),
 };
-export { Button };
+export default Button;

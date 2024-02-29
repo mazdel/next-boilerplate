@@ -43,4 +43,4 @@ ValidationInfo.propTypes = {
   classSuccess: PropTypes.string,
 };
 
-export { ValidationInfo };
+export default ValidationInfo;
