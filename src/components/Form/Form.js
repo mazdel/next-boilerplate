@@ -143,4 +143,4 @@ Form.propTypes = {
   defaultFieldsValue: PropTypes.object,
   onSuccess: PropTypes.func,
 };
-export { Form };
+export default Form;

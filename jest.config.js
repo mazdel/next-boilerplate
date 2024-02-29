@@ -18,7 +18,6 @@ const config = {
     "^@/app/(.*)$": "<rootDir>/app/$1",
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
     "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
-    "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
     "^@/styles/(.*)$": "<rootDir>/src/styles/$1",
     "^@/contexts/(.*)$": "<rootDir>/src/contexts/$1",
     "^@/configs/(.*)$": "<rootDir>/src/configs/$1",

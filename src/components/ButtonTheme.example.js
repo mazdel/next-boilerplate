@@ -42,4 +42,4 @@ const ButtonTheme = ({ className = "" }) => {
 ButtonTheme.propTypes = {
   className: PropTypes.string,
 };
-export { ButtonTheme };
+export default ButtonTheme;
