@@ -5,8 +5,6 @@ import moment from "moment/moment";
 
 export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
-  let verifiedToken;
-
   const isProtectedPath = globalConfig.protectedPath.some((path) =>
     pathname.startsWith(path),
   );
@@ -14,24 +12,24 @@ export async function middleware(request) {
     pathname.startsWith(path),
   );
 
-  const token = request.cookies.get("access_token")?.value;
-  if (token) {
-    verifiedToken = await AuthVerify(token).catch((err) => {
+  try {
+    const token = request.cookies.get("access_token")?.value;
+
+    if (!token) throw { status: 401, message: "Token Required" };
+
+    const verifiedToken = await AuthVerify(token).catch((err) => {
       if (process.env.NODE_ENV === "development") {
         console.error(err);
       }
     });
-  }
-  if (isProtectedPath && !isNotProtectedPath) {
+
     if (!verifiedToken) {
-      if (pathname.includes("/api")) {
-        return NextResponse.json(
-          { message: "Authentication Required" },
-          { status: 401 },
-        );
-      }
+      throw { status: 401, message: "Authentication Required" };
+    }
+
+    if (pathname === globalConfig.defaultRedirectPath) {
       return NextResponse.redirect(
-        new URL(globalConfig.defaultRedirectPath, request.url),
+        new URL(verifiedToken.homePath, request.url),
       );
     }
 
@@ -42,11 +40,23 @@ export async function middleware(request) {
       expires: moment.unix(verifiedToken.exp).toDate(),
     });
     return response;
-  }
 
-  if (pathname === globalConfig.defaultRedirectPath && verifiedToken) {
-    return NextResponse.redirect(new URL(verifiedToken.homePath, request.url));
+  } catch (e) {
+    
+    if (process.env.NODE_ENV === "development") {
+      console.error(e);
+    }
+    if (isProtectedPath && !isNotProtectedPath) {
+      if (pathname.includes("/api")) {
+        return NextResponse.json(
+          { message: "Authentication Required" },
+          { status: 401 },
+        );
+      }
+      return NextResponse.redirect(
+        new URL(globalConfig.defaultRedirectPath, request.url),
+      );
+    }
+    return NextResponse.next();
   }
-
-  return NextResponse.next();
 }
