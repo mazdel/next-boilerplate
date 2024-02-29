@@ -11,19 +11,32 @@ import { useState, useEffect } from "react";
 export const useLocalStorage = (key, defaultValue) => {
   const [value, setValue] = useState(defaultValue);
 
+  const oldKey = key;
+  const onStorageUpdate = (e) => {
+    const { key, newValue } = e;
+    if (key === oldKey) {
+      setValue(newValue);
+    }
+  };
+
   const changeValue = (value) => {
     setValue(value);
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, value);
   };
 
   useEffect(() => {
     const stored = localStorage.getItem(key);
     if (!stored) {
       setValue(defaultValue);
-      localStorage.setItem(key, JSON.stringify(defaultValue));
+      localStorage.setItem(key, defaultValue);
     } else {
-      setValue(JSON.parse(stored));
+      setValue(stored);
     }
+    window.addEventListener("storage", onStorageUpdate);
+    return () => {
+      window.removeEventListener("storage", onStorageUpdate);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue, key]);
 
   return [value, changeValue];
